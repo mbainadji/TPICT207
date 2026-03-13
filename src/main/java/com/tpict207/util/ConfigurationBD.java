@@ -18,8 +18,10 @@ public class ConfigurationBD {
     private static final String TIMEZONE_PROPERTY = "azure.mysql.server-timezone";
 
     private static final String MANAGED_IDENTITY_PROPERTY = "azure.mysql.managed-identity";
+    private static final String JDBC_USER_PROPERTY = "azure.mysql.user";
+    private static final String JDBC_PASSWORD_PROPERTY = "azure.mysql.password";
 
-    private static final String DEFAULT_MANAGED_IDENTITY = "root";
+    private static final String DEFAULT_MANAGED_IDENTITY = "YOUR_MANAGED_IDENTITY_NAME";
     private static final String DEFAULT_HOST = "localhost";
     private static final String DEFAULT_PORT = "3306";
     private static final String DEFAULT_DATABASE = "notes_db";
@@ -74,15 +76,7 @@ public class ConfigurationBD {
 
         String configuredUrl = props.getProperty(JDBC_URL_PROPERTY);
         if (configuredUrl != null && !configuredUrl.isBlank()) {
-            // Ensure required plugin and user parameters exist
-            String url = configuredUrl;
-            if (!url.contains("authenticationPlugins=")) {
-                url += AUTH_PLUGIN_CONFIG;
-            }
-            if (!url.contains("user=")) {
-                url += "&user=" + MANAGED_IDENTITY;
-            }
-            return url;
+            return configureUrlForMode(configuredUrl, props);
         }
 
         String host = props.getProperty(HOST_PROPERTY, DEFAULT_HOST);
@@ -92,8 +86,36 @@ public class ConfigurationBD {
         String timezone = props.getProperty(TIMEZONE_PROPERTY, DEFAULT_TIMEZONE);
 
         String baseUrl = String.format("jdbc:mysql://%s:%s/%s?useSSL=%s&allowPublicKeyRetrieval=true&serverTimezone=%s", host, port, database, useSsl, timezone);
-        String urlWithPlugin = baseUrl + AUTH_PLUGIN_CONFIG;
-        return urlWithPlugin + "&user=" + MANAGED_IDENTITY;
+        return configureUrlForMode(baseUrl, props);
+    }
+
+    private static String configureUrlForMode(String url, Properties props) {
+        String managedIdentity = props.getProperty(MANAGED_IDENTITY_PROPERTY, DEFAULT_MANAGED_IDENTITY);
+        boolean usingManagedIdentity = managedIdentity != null && !managedIdentity.isBlank() && !DEFAULT_MANAGED_IDENTITY.equals(managedIdentity);
+
+        if (usingManagedIdentity) {
+            if (!url.contains("authenticationPlugins=")) {
+                url += AUTH_PLUGIN_CONFIG;
+            }
+            if (!url.contains("user=")) {
+                url += "&user=" + managedIdentity;
+            }
+            return url;
+        }
+
+        // Local / non-managed mode: allow username/password overrides
+        String user = props.getProperty(JDBC_USER_PROPERTY);
+        String password = props.getProperty(JDBC_PASSWORD_PROPERTY);
+
+        if (user != null && !user.isBlank() && !url.contains("user=")) {
+            url += "&user=" + user;
+        }
+        if (password != null && !password.isBlank() && !url.contains("password=")) {
+            url += "&password=" + password;
+        }
+
+        return url;
+    }
     }
 
     public static Connection getConnection() throws SQLException {
