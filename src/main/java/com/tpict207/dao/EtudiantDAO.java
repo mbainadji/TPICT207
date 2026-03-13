@@ -21,4 +21,17 @@ public class EtudiantDAO {
         }
         return etudiants;
     }
+
+    public boolean ajouterEtudiant(String nom, String matricule) {
+        String requete = "INSERT INTO etudiants (nom, matricule) VALUES (?, ?)";
+        try (Connection conn = ConfigurationBD.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(requete)) {
+            pstmt.setString(1, nom);
+            pstmt.setString(2, matricule);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
