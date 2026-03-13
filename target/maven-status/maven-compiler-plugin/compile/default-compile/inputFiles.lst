@@ -1,0 +1,13 @@
+/home/kamala/Téléchargements/TPICT207/src/main/java/com/tpict207/Main.java
+/home/kamala/Téléchargements/TPICT207/src/main/java/com/tpict207/dao/CoursDAO.java
+/home/kamala/Téléchargements/TPICT207/src/main/java/com/tpict207/dao/EtudiantDAO.java
+/home/kamala/Téléchargements/TPICT207/src/main/java/com/tpict207/dao/HistoriqueNoteDAO.java
+/home/kamala/Téléchargements/TPICT207/src/main/java/com/tpict207/dao/NoteDAO.java
+/home/kamala/Téléchargements/TPICT207/src/main/java/com/tpict207/dao/UtilisateurDAO.java
+/home/kamala/Téléchargements/TPICT207/src/main/java/com/tpict207/model/Cours.java
+/home/kamala/Téléchargements/TPICT207/src/main/java/com/tpict207/model/Etudiant.java
+/home/kamala/Téléchargements/TPICT207/src/main/java/com/tpict207/model/HistoriqueNote.java
+/home/kamala/Téléchargements/TPICT207/src/main/java/com/tpict207/model/Note.java
+/home/kamala/Téléchargements/TPICT207/src/main/java/com/tpict207/model/Utilisateur.java
+/home/kamala/Téléchargements/TPICT207/src/main/java/com/tpict207/service/ServiceNote.java
+/home/kamala/Téléchargements/TPICT207/src/main/java/com/tpict207/util/ConfigurationBD.java
