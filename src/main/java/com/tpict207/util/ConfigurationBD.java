@@ -8,11 +8,25 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class ConfigurationBD {
-    private static final String URL = "jdbc:mysql://localhost:3306/notes_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
-    private static final String AUTH_PLUGIN_CONFIG = "&authenticationPlugins=com.azure.identity.extensions.jdbc.mysql.AzureMysqlAuthenticationPlugin";
     private static final String PROPERTIES_FILE = "application.properties";
+
+    private static final String JDBC_URL_PROPERTY = "azure.mysql.jdbc-url";
+    private static final String HOST_PROPERTY = "azure.mysql.host";
+    private static final String PORT_PROPERTY = "azure.mysql.port";
+    private static final String DATABASE_PROPERTY = "azure.mysql.database";
+    private static final String USE_SSL_PROPERTY = "azure.mysql.use-ssl";
+    private static final String TIMEZONE_PROPERTY = "azure.mysql.server-timezone";
+
     private static final String MANAGED_IDENTITY_PROPERTY = "azure.mysql.managed-identity";
+
     private static final String DEFAULT_MANAGED_IDENTITY = "root";
+    private static final String DEFAULT_HOST = "localhost";
+    private static final String DEFAULT_PORT = "3306";
+    private static final String DEFAULT_DATABASE = "notes_db";
+    private static final String DEFAULT_USE_SSL = "false";
+    private static final String DEFAULT_TIMEZONE = "UTC";
+
+    private static final String AUTH_PLUGIN_CONFIG = "&authenticationPlugins=com.azure.identity.extensions.jdbc.mysql.AzureMysqlAuthenticationPlugin";
 
     private static final String MANAGED_IDENTITY;
 
@@ -28,14 +42,21 @@ public class ConfigurationBD {
     }
 
     private static String loadManagedIdentity() {
+        Properties props = loadProperties();
+        if (props != null) {
+            String identity = props.getProperty(MANAGED_IDENTITY_PROPERTY);
+            if (identity != null && !identity.isBlank()) {
+                return identity;
+            }
+        }
+        return DEFAULT_MANAGED_IDENTITY;
+    }
+
+    private static Properties loadProperties() {
         Properties props = new Properties();
         try (InputStream in = ConfigurationBD.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE)) {
             if (in != null) {
                 props.load(in);
-                String identity = props.getProperty(MANAGED_IDENTITY_PROPERTY);
-                if (identity != null && !identity.isBlank()) {
-                    return identity;
-                }
             } else {
                 System.err.println("Configuration file not found: " + PROPERTIES_FILE);
             }
@@ -43,12 +64,41 @@ public class ConfigurationBD {
             System.err.println("Unable to load configuration file: " + PROPERTIES_FILE);
             e.printStackTrace();
         }
-        return DEFAULT_MANAGED_IDENTITY;
+        return props;
+    }
+
+    private static String buildJdbcUrl(Properties props) {
+        if (props == null) {
+            props = new Properties();
+        }
+
+        String configuredUrl = props.getProperty(JDBC_URL_PROPERTY);
+        if (configuredUrl != null && !configuredUrl.isBlank()) {
+            // Ensure required plugin and user parameters exist
+            String url = configuredUrl;
+            if (!url.contains("authenticationPlugins=")) {
+                url += AUTH_PLUGIN_CONFIG;
+            }
+            if (!url.contains("user=")) {
+                url += "&user=" + MANAGED_IDENTITY;
+            }
+            return url;
+        }
+
+        String host = props.getProperty(HOST_PROPERTY, DEFAULT_HOST);
+        String port = props.getProperty(PORT_PROPERTY, DEFAULT_PORT);
+        String database = props.getProperty(DATABASE_PROPERTY, DEFAULT_DATABASE);
+        String useSsl = props.getProperty(USE_SSL_PROPERTY, DEFAULT_USE_SSL);
+        String timezone = props.getProperty(TIMEZONE_PROPERTY, DEFAULT_TIMEZONE);
+
+        String baseUrl = String.format("jdbc:mysql://%s:%s/%s?useSSL=%s&allowPublicKeyRetrieval=true&serverTimezone=%s", host, port, database, useSsl, timezone);
+        String urlWithPlugin = baseUrl + AUTH_PLUGIN_CONFIG;
+        return urlWithPlugin + "&user=" + MANAGED_IDENTITY;
     }
 
     public static Connection getConnection() throws SQLException {
-        String urlWithPlugin = URL + AUTH_PLUGIN_CONFIG;
-        String urlWithIdentity = urlWithPlugin + "&user=" + MANAGED_IDENTITY;
-        return DriverManager.getConnection(urlWithIdentity);
+        Properties props = loadProperties();
+        String url = buildJdbcUrl(props);
+        return DriverManager.getConnection(url);
     }
 }
