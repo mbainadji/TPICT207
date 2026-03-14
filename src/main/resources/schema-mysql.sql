@@ -48,17 +48,3 @@ CREATE TABLE IF NOT EXISTS historique_notes (
     CONSTRAINT fk_hist_note FOREIGN KEY (note_id) REFERENCES notes(id),
     CONSTRAINT fk_hist_user FOREIGN KEY (modifie_par_id) REFERENCES utilisateurs(id)
 );
-
--- Données initiales (demo)
-INSERT INTO utilisateurs (nom_utilisateur, mot_de_passe, role)
-VALUES ('enseignant1', '{noop}pass123', 'ENSEIGNANT'),
-       ('jury1', '{noop}pass123', 'JURY');
-
-INSERT INTO etudiants (nom, matricule)
-VALUES ('Alice Smith', 'ET001'),
-       ('Bob Jones', 'ET002');
-
-INSERT INTO cours (nom, code)
-VALUES ('Programmation Java', 'CS101'),
-       ('Systemes de Base de Donnees', 'CS102');
-
