@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>Etudiants | Grade Validation</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/assets/app.css" />
+  </head>
+  <body data-page="etudiants">
+    <div class="bg">
+      <div class="bg__grid"></div>
+      <div class="bg__blob bg__blob--a"></div>
+      <div class="bg__blob bg__blob--b"></div>
+    </div>
+
+    <header class="topbar">
+      <div class="topbar__inner">
+        <a class="brand" href="/" aria-label="Accueil">
+          <span class="brand__mark">GV</span>
+          <span class="brand__name">Grade Validation</span>
+        </a>
+        <nav class="nav">
+          <a class="nav__link" href="/">Accueil</a>
+          <a class="nav__link" href="/etudiants.html">Etudiants</a>
+          <a class="nav__link" href="/cours.html">Cours</a>
+          <a class="nav__link" href="/notes.html">Notes</a>
+        </nav>
+        <div class="topbar__actions">
+          <div class="pill" id="pillUser">Non authentifie</div>
+          <button class="btn btn--ghost" id="btnLogout" type="button">Deconnexion</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <div class="pagehead">
+        <div>
+          <h1>Etudiants</h1>
+          <p>Ajout et consultation des etudiants.</p>
+        </div>
+        <div class="pagehead__right">
+          <div class="pill pill--muted">Total: <span class="mono" id="statEtudiants">-</span></div>
+        </div>
+      </div>
+
+      <section class="panel">
+        <header class="panel__head">
+          <h2>Ajouter un etudiant</h2>
+          <p>Nom + matricule obligatoires.</p>
+        </header>
+        <div class="panel__body">
+          <form class="form form--inline" id="formEtudiant">
+            <div class="field">
+              <label for="etNom">Nom</label>
+              <input id="etNom" name="nom" placeholder="Alice Smith" autocomplete="off" required />
+            </div>
+            <div class="field">
+              <label for="etMat">Matricule</label>
+              <input id="etMat" name="matricule" placeholder="ET123" autocomplete="off" required />
+            </div>
+            <button class="btn" type="submit">Ajouter</button>
+          </form>
+
+          <div class="tablewrap">
+            <table class="table" id="tableEtudiants">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nom</th>
+                  <th>Matricule</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <p><a class="nav__link" href="/">Retour dashboard</a></p>
+      </footer>
+    </main>
+
+    <div class="modal" id="loginModal" aria-hidden="true">
+      <div class="modal__backdrop"></div>
+      <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+        <h2 id="loginTitle">Connexion</h2>
+        <p class="muted">Saisissez vos identifiants pour acceder aux etudiants.</p>
+        <form class="form" id="formLogin">
+          <div class="field">
+            <label for="lgUser">Utilisateur</label>
+            <input id="lgUser" name="username" placeholder="enseignant1" autocomplete="username" required />
+          </div>
+          <div class="field">
+            <label for="lgPass">Mot de passe</label>
+            <input id="lgPass" name="password" type="password" placeholder="pass123" autocomplete="current-password" required />
+          </div>
+          <div class="row">
+            <button class="btn" type="submit">Se connecter</button>
+            <button class="btn btn--ghost" id="btnUseDemo" type="button">Utiliser demo</button>
+          </div>
+          <div class="error" id="loginError" role="status" aria-live="polite"></div>
+        </form>
+      </div>
+    </div>
+
+    <div class="modal" id="etudiantModal" aria-hidden="true">
+      <div class="modal__backdrop"></div>
+      <div class="modal__card modal__card--lg" role="dialog" aria-modal="true" aria-labelledby="etTitle">
+        <div class="row" style="justify-content:space-between; align-items:flex-start">
+          <div>
+            <h2 id="etTitle">Detail etudiant</h2>
+            <p class="muted" id="etSubtitle">-</p>
+          </div>
+          <button class="btn btn--ghost" id="btnCloseEtudiant" type="button">Fermer</button>
+        </div>
+
+        <div class="kv kv--2" id="etKv"></div>
+
+        <div class="row" style="gap:10px; flex-wrap:wrap; margin-top:8px">
+          <button class="btn btn--ghost" id="btnEtCsv" type="button">Telecharger releve (CSV)</button>
+        </div>
+
+        <div class="subhead">Notes de l’etudiant</div>
+        <div class="tablewrap">
+          <table class="table" id="tableEtNotes">
+            <thead>
+              <tr>
+                <th>NoteID</th>
+                <th>Cours</th>
+                <th>Code</th>
+                <th>Valeur</th>
+                <th>Enseignant</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="error" id="etError" role="status" aria-live="polite" style="margin-top:10px"></div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="/assets/app.js"></script>
+  </body>
+</html>

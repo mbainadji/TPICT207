@@ -1,29 +1,36 @@
 package com.tpict207.model;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "notes")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Note {
-    private int id;
-    private int etudiantId;
-    private int coursId;
-    private double valeur;
-    private int enseignantId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    public Note() {}
-    public Note(int id, int etudiantId, int coursId, double valeur, int enseignantId) {
-        this.id = id;
-        this.etudiantId = etudiantId;
-        this.coursId = coursId;
-        this.valeur = valeur;
-        this.enseignantId = enseignantId;
-    }
+    @ManyToOne
+    @JoinColumn(name = "etudiant_id", nullable = false)
+    private Etudiant etudiant;
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-    public int getEtudiantId() { return etudiantId; }
-    public void setEtudiantId(int etudiantId) { this.etudiantId = etudiantId; }
-    public int getCoursId() { return coursId; }
-    public void setCoursId(int coursId) { this.coursId = coursId; }
-    public double getValeur() { return valeur; }
-    public void setValeur(double valeur) { this.valeur = valeur; }
-    public int getEnseignantId() { return enseignantId; }
-    public void setEnseignantId(int enseignantId) { this.enseignantId = enseignantId; }
+    @ManyToOne
+    @JoinColumn(name = "cours_id", nullable = false)
+    private Cours cours;
+
+    @Column(nullable = false)
+    @Min(0)
+    @Max(20)
+    private Double valeur;
+
+    @ManyToOne
+    @JoinColumn(name = "enseignant_id", nullable = false)
+    private Utilisateur enseignant;
 }

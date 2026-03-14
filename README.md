@@ -1,6 +1,6 @@
-# Grade Validation Backend
+# Grade Validation (Web + API)
 
-Ce projet est un système de gestion et de validation des notes pour les étudiants, développé en **Java 17** avec **Maven**.
+Ce projet est un système de gestion et de validation des notes pour les étudiants, développé en **Java 17** avec **Spring Boot** (API REST + mini interface web) et **Maven**.
 
 ## Fonctionnalités principales
 
@@ -16,26 +16,48 @@ Ce projet est un système de gestion et de validation des notes pour les étudia
 ## Architecture Technique
 
 - **Langage** : Java 17.
-- **Base de données** : 
-    - Supporte **MySQL** (avec intégration Azure Identity pour le cloud).
-    - Mode de repli automatique sur une base de données **H2 en mémoire** pour les tests locaux si MySQL n'est pas disponible.
-- **Patron de conception** : Architecture DAO (Data Access Object) pour séparer la logique métier de l'accès aux données.
+- **API** : Spring Boot + Spring Data JPA + Spring Security (roles **ENSEIGNANT**, **JURY**).
+- **UI** : page statique servie par Spring (`/`) qui consomme l'API (`/api/**`).
+- **Base de données** :
+    - Par defaut: **H2 en memoire** (demarrage immediat en local).
+    - Optionnel: **MySQL** (script disponible: `src/main/resources/schema-mysql.sql`).
 
 ## Installation et Utilisation
 
 1. **Prérequis** : Java 17 et Maven installés.
-2. **Compilation** :
+2. **Compilation** (offline possible si les dependances sont deja en cache) :
    ```bash
-   mvn clean compile
+   mvn -DskipTests compile
    ```
-3. **Exécution** :
+3. **Execution** :
    ```bash
-   mvn exec:java
+   mvn spring-boot:run
    ```
+4. **Acces** :
+    - UI (dashboard): `http://localhost:8081/`
+
+## Ou sont stockees les donnees ?
+
+En local, les donnees sont persistees dans une base H2 sur fichier (donc elles restent apres redemarrage) :
+- `~/.grade-validation/notes_db.mv.db`
+
+## Stocker les donnees dans MySQL
+
+Pour que toutes les donnees soient stockees dans **MySQL** (au lieu de H2), lance l'application avec le profil `mysql` :
+```bash
+mvn spring-boot:run -Dspring-boot.run.arguments=--spring.profiles.active=mysql
+```
+
+Par defaut, le profil MySQL utilise:
+- host: `localhost:3306`
+- database: `notes_db`
+- user/pass: `app` / `app123`
+
+Tu peux modifier ces valeurs dans `src/main/resources/application-mysql.properties`.
 
 ## Identifiants de test (H2)
 
-Si vous utilisez la base de données de repli (H2), voici les comptes par défaut :
+En local (H2), voici les comptes par defaut :
 - **Enseignant** : `enseignant1` / `pass123`
 - **Jury** : `jury1` / `pass123`
 
@@ -45,7 +67,7 @@ Si vous utilisez la base de données de repli (H2), voici les comptes par défau
 
 Voici quelques fonctionnalités suggérées pour enrichir le projet :
 
-1. **Interface Web ou Desktop** : Remplacer l'interface en ligne de commande par une interface graphique (JavaFX ou Spring Boot + React).
+1. **UI plus complete** : formulaires avances, filtres, export PDF.
 2. **Calcul des Moyennes** : Ajouter un module pour calculer automatiquement les moyennes par semestre et par étudiant.
 3. **Exportation de Rapports** : Générer des relevés de notes au format PDF ou Excel.
 4. **Gestion des Absences** : Intégrer un système de suivi des présences lié aux performances académiques.
