@@ -64,4 +64,35 @@ public class NoteDAO {
         }
         return false;
     }
+
+    public double getMoyenneEtudiant(int etudiantId) {
+        String requete = "SELECT AVG(valeur) as moyenne FROM notes WHERE etudiant_id = ?";
+        try (Connection conn = ConfigurationBD.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(requete)) {
+            pstmt.setInt(1, etudiantId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getDouble("moyenne");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
+
+    public List<Note> getNotesParEtudiant(int etudiantId) {
+        List<Note> notes = new ArrayList<>();
+        String requete = "SELECT * FROM notes WHERE etudiant_id = ?";
+        try (Connection conn = ConfigurationBD.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(requete)) {
+            pstmt.setInt(1, etudiantId);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                notes.add(new Note(rs.getInt("id"), rs.getInt("etudiant_id"), rs.getInt("cours_id"), rs.getDouble("valeur"), rs.getInt("enseignant_id")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return notes;
+    }
 }

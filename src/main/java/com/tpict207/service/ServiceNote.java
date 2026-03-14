@@ -45,4 +45,22 @@ public class ServiceNote {
         }
         return false;
     }
+
+    public double calculerMoyenneEtudiant(int etudiantId) {
+        return noteDAO.getMoyenneEtudiant(etudiantId);
+    }
+
+    public String genererReleveNotesCSV(int etudiantId) {
+        List<Note> notes = noteDAO.getNotesParEtudiant(etudiantId);
+        StringBuilder csv = new StringBuilder("NoteID,CoursID,Valeur,EnseignantID\n");
+        for (Note n : notes) {
+            csv.append(n.getId()).append(",")
+               .append(n.getCoursId()).append(",")
+               .append(n.getValeur()).append(",")
+               .append(n.getEnseignantId()).append("\n");
+        }
+        csv.append("Moyenne,,")
+           .append(calculerMoyenneEtudiant(etudiantId)).append(",\n");
+        return csv.toString();
+    }
 }

@@ -48,6 +48,8 @@ public class Main {
             System.out.println("5) Voir toutes les notes");
             System.out.println("6) Modifier une note (Jury uniquement)");
             System.out.println("7) Voir l'historique des modifications");
+            System.out.println("8) Voir la moyenne d'un étudiant");
+            System.out.println("9) Exporter le relevé de notes (CSV)");
             System.out.println("0) Quitter");
             System.out.print("Choix: ");
 
@@ -114,6 +116,19 @@ public class Main {
                                 + " | " + hn.getAncienneNote() + " -> " + hn.getNouvelleNote()
                                 + " | Motif : " + hn.getMotif() + " | Date : " + hn.getDateModification());
                     }
+                    break;
+                case "8":
+                    System.out.print("ID de l'étudiant : ");
+                    int eId = Integer.parseInt(scanner.nextLine().trim());
+                    double moyenne = serviceNote.calculerMoyenneEtudiant(eId);
+                    System.out.println("Moyenne de l'étudiant : " + moyenne);
+                    break;
+                case "9":
+                    System.out.print("ID de l'étudiant pour l'export : ");
+                    int expId = Integer.parseInt(scanner.nextLine().trim());
+                    String csv = serviceNote.genererReleveNotesCSV(expId);
+                    System.out.println("--- Relevé de notes (CSV) ---");
+                    System.out.println(csv);
                     break;
                 case "0":
                     System.out.println("Au revoir.");
