@@ -1,30 +1,41 @@
 package com.tpict207.model;
 
-import java.sql.Timestamp;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "historique_notes")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class HistoriqueNote {
-    private int id;
-    private int noteId;
-    private double ancienneNote;
-    private double nouvelleNote;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "note_id", nullable = false)
+    private Note note;
+
+    @Column(name = "ancienne_note", nullable = false)
+    private Double ancienneNote;
+
+    @Column(name = "nouvelle_note", nullable = false)
+    private Double nouvelleNote;
+
+    @Column(name = "motif_modification", nullable = false, columnDefinition = "TEXT")
     private String motif;
-    private int modifieParId;
-    private Timestamp dateModification;
 
-    public HistoriqueNote() {}
+    @ManyToOne
+    @JoinColumn(name = "modifie_par_id", nullable = false)
+    private Utilisateur modifiePar;
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-    public int getNoteId() { return noteId; }
-    public void setNoteId(int noteId) { this.noteId = noteId; }
-    public double getAncienneNote() { return ancienneNote; }
-    public void setAncienneNote(double ancienneNote) { this.ancienneNote = ancienneNote; }
-    public double getNouvelleNote() { return nouvelleNote; }
-    public void setNouvelleNote(double nouvelleNote) { this.nouvelleNote = nouvelleNote; }
-    public String getMotif() { return motif; }
-    public void setMotif(String motif) { this.motif = motif; }
-    public int getModifieParId() { return modifieParId; }
-    public void setModifieParId(int modifieParId) { this.modifieParId = modifieParId; }
-    public Timestamp getDateModification() { return dateModification; }
-    public void setDateModification(Timestamp dateModification) { this.dateModification = dateModification; }
+    @CreationTimestamp
+    @Column(name = "date_modification", updatable = false)
+    private LocalDateTime dateModification;
 }

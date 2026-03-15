@@ -1,0 +1,47 @@
+Rapport du Projet : Grade Validation (Web + API)
+===================================================
+
+Description Générale
+--------------------
+Ce projet est un système de gestion et de validation des notes pour les étudiants.
+Il est développé en Java 17 avec le framework Spring Boot.
+
+Technologies Utilisées
+----------------------
+- Langage : Java 17
+- Framework : Spring Boot 3.2.4
+- Gestion de Dépendances : Maven
+- Persistance : Spring Data JPA (Hibernate)
+- Base de Données : H2 (par défaut) ou MySQL (optionnel)
+- Sécurité : Spring Security (Authentification par rôles)
+
+Architecture logicielle
+-----------------------
+Le projet suit une architecture multicouche standard :
+- Modèle : Entités JPA (Etudiant, Cours, Note, Utilisateur, HistoriqueNote)
+- Repository : Interfaces Spring Data pour l'accès aux données
+- Service : Logique métier (NoteService, EtudiantService, etc.)
+- Web/Controller : API REST pour l'interaction avec le frontend
+
+Fonctionnalités Principales
+---------------------------
+1. Gestion des Utilisateurs : Rôles ENSEIGNANT et JURY.
+2. Gestion des Étudiants et des Cours : Visualisation et ajout.
+3. Gestion des Notes :
+   - Ajout de notes par les enseignants (entre 0 et 20).
+   - Consultation globale des résultats.
+   - Modification réservée au rôle JURY.
+4. Traçabilité : Historique complet des modifications effectuées par le jury.
+
+Installation et Exécution
+-------------------------
+1. Prérequis : Java 17 et Maven.
+2. Compilation : mvn -DskipTests compile
+3. Lancement : mvn spring-boot:run
+4. Interface Web : Accessible sur http://localhost:8081/
+
+Statut du Projet
+----------------
+Le projet est désormais nettoyé de son code legacy (JavaFX/JDBC) et est pleinement opérationnel. 
+Les problèmes de compilation liés aux tests obsolètes et les erreurs d'authentification à la base de données H2 ont été résolus.
+Des pistes d'amélioration incluent le calcul automatique des moyennes et l'exportation de rapports PDF.

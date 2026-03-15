@@ -1,24 +1,31 @@
 package com.tpict207.model;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "utilisateurs")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Utilisateur {
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "nom_utilisateur", nullable = false, unique = true)
     private String nomUtilisateur;
+
+    @Column(name = "mot_de_passe", nullable = false)
     private String motDePasse;
-    private String role; // ENSEIGNANT, JURY
 
-    public Utilisateur() {}
-    public Utilisateur(int id, String nomUtilisateur, String role) {
-        this.id = id;
-        this.nomUtilisateur = nomUtilisateur;
-        this.role = role;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
+    public enum Role {
+        ENSEIGNANT, JURY
     }
-
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-    public String getNomUtilisateur() { return nomUtilisateur; }
-    public void setNomUtilisateur(String nomUtilisateur) { this.nomUtilisateur = nomUtilisateur; }
-    public String getMotDePasse() { return motDePasse; }
-    public void setMotDePasse(String motDePasse) { this.motDePasse = motDePasse; }
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
 }

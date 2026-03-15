@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>Notes | Grade Validation</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/assets/app.css" />
+  </head>
+  <body data-page="notes">
+    <div class="bg">
+      <div class="bg__grid"></div>
+      <div class="bg__blob bg__blob--a"></div>
+      <div class="bg__blob bg__blob--b"></div>
+    </div>
+
+    <header class="topbar">
+      <div class="topbar__inner">
+        <a class="brand" href="/" aria-label="Accueil">
+          <span class="brand__mark">GV</span>
+          <span class="brand__name">Grade Validation</span>
+        </a>
+        <nav class="nav">
+          <a class="nav__link" href="/">Accueil</a>
+          <a class="nav__link" href="/etudiants.html">Etudiants</a>
+          <a class="nav__link" href="/cours.html">Cours</a>
+          <a class="nav__link" href="/notes.html">Notes</a>
+        </nav>
+        <div class="topbar__actions">
+          <div class="pill" id="pillUser">Non authentifie</div>
+          <button class="btn btn--ghost" id="btnLogout" type="button">Deconnexion</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <div class="pagehead">
+        <div>
+          <h1>Notes</h1>
+          <p id="hintNote">-</p>
+        </div>
+        <div class="pagehead__right">
+          <div class="pill pill--muted">Total: <span class="mono" id="statNotes">-</span></div>
+        </div>
+      </div>
+
+      <section class="panel">
+        <header class="panel__head">
+          <h2>Ajouter une note</h2>
+          <p>Disponible pour le role ENSEIGNANT.</p>
+        </header>
+        <div class="panel__body">
+          <form class="form form--inline" id="formNote">
+            <div class="field">
+              <label for="nEtudiant">Etudiant</label>
+              <select id="nEtudiant" name="etudiantId" required></select>
+            </div>
+            <div class="field">
+              <label for="nCours">Cours</label>
+              <select id="nCours" name="coursId" required></select>
+            </div>
+            <div class="field field--sm">
+              <label for="nValeur">Note</label>
+              <input id="nValeur" name="valeur" type="number" min="0" max="20" step="0.25" placeholder="15.5" required />
+            </div>
+            <button class="btn" type="submit">Ajouter</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="panel" style="margin-top:16px">
+        <header class="panel__head">
+          <h2>Liste des notes</h2>
+          <p>Le role JURY peut modifier une note et consulter l’historique.</p>
+        </header>
+        <div class="panel__body">
+          <div class="tablewrap">
+            <table class="table" id="tableNotes">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Etudiant</th>
+                  <th>Cours</th>
+                  <th>Valeur</th>
+                  <th>Enseignant</th>
+                  <th class="t-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <p><a class="nav__link" href="/">Retour dashboard</a></p>
+      </footer>
+    </main>
+
+    <div class="modal" id="editModal" aria-hidden="true">
+      <div class="modal__backdrop"></div>
+      <div class="modal__card modal__card--lg" role="dialog" aria-modal="true" aria-labelledby="editTitle">
+        <h2 id="editTitle">Modifier une note</h2>
+        <p class="muted">Disponible uniquement pour le role JURY.</p>
+        <form class="form" id="formEditNote">
+          <input type="hidden" id="editNoteId" name="noteId" />
+          <div class="row" style="gap:12px; align-items:flex-end; flex-wrap:wrap">
+            <div class="field" style="min-width:160px">
+              <label for="editValeur">Nouvelle valeur</label>
+              <input id="editValeur" name="nouvelleValeur" type="number" min="0" max="20" step="0.25" required />
+            </div>
+            <div class="field" style="flex:1; min-width:240px">
+              <label for="editMotif">Motif</label>
+              <input id="editMotif" name="motif" placeholder="Ex: correction apres jury" required />
+            </div>
+          </div>
+          <div class="row">
+            <button class="btn" type="submit">Enregistrer</button>
+            <button class="btn btn--ghost" id="btnCloseEdit" type="button">Annuler</button>
+            <div class="error" id="editError" role="status" aria-live="polite"></div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="modal" id="noteModal" aria-hidden="true">
+      <div class="modal__backdrop"></div>
+      <div class="modal__card modal__card--lg" role="dialog" aria-modal="true" aria-labelledby="noteTitle">
+        <div class="row" style="justify-content:space-between; align-items:flex-start">
+          <div>
+            <h2 id="noteTitle">Detail de la note</h2>
+            <p class="muted" id="noteSubtitle">-</p>
+          </div>
+          <button class="btn btn--ghost" id="btnCloseNote" type="button">Fermer</button>
+        </div>
+
+        <div class="kv" id="noteKv"></div>
+
+        <div class="row" style="gap:10px; flex-wrap:wrap; margin-top:8px">
+          <button class="btn btn--ghost" id="btnNoteEdit" type="button">Modifier (Jury)</button>
+          <button class="btn btn--ghost" id="btnNoteHistory" type="button">Voir historique</button>
+        </div>
+
+        <div class="subhead">Historique</div>
+        <div class="tablewrap">
+          <table class="table" id="tableHistorique">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Ancienne</th>
+                <th>Nouvelle</th>
+                <th>Motif</th>
+                <th>Par</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="error" id="noteError" role="status" aria-live="polite" style="margin-top:10px"></div>
+      </div>
+    </div>
+
+    <div class="modal" id="loginModal" aria-hidden="true">
+      <div class="modal__backdrop"></div>
+      <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+        <h2 id="loginTitle">Connexion</h2>
+        <p class="muted">Saisissez vos identifiants pour acceder aux notes.</p>
+        <form class="form" id="formLogin">
+          <div class="field">
+            <label for="lgUser">Utilisateur</label>
+            <input id="lgUser" name="username" placeholder="enseignant1" autocomplete="username" required />
+          </div>
+          <div class="field">
+            <label for="lgPass">Mot de passe</label>
+            <input id="lgPass" name="password" type="password" placeholder="pass123" autocomplete="current-password" required />
+          </div>
+          <div class="row">
+            <button class="btn" type="submit">Se connecter</button>
+            <button class="btn btn--ghost" id="btnUseDemo" type="button">Utiliser demo</button>
+          </div>
+          <div class="error" id="loginError" role="status" aria-live="polite"></div>
+        </form>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="/assets/app.js"></script>
+  </body>
+</html>

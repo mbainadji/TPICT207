@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>Grade Validation</title>
+    <meta name="description" content="Dashboard: etudiants, cours, notes. Roles ENSEIGNANT/JURY." />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/assets/app.css" />
+  </head>
+  <body data-page="dashboard">
+    <div class="bg">
+      <div class="bg__grid"></div>
+      <div class="bg__blob bg__blob--a"></div>
+      <div class="bg__blob bg__blob--b"></div>
+    </div>
+
+    <header class="topbar">
+      <div class="topbar__inner">
+        <a class="brand" href="/" aria-label="Accueil">
+          <span class="brand__mark">GV</span>
+          <span class="brand__name">Grade Validation</span>
+        </a>
+        <nav class="nav">
+          <a class="nav__link" href="/">Accueil</a>
+          <a class="nav__link" href="/etudiants.html">Etudiants</a>
+          <a class="nav__link" href="/cours.html">Cours</a>
+          <a class="nav__link" href="/notes.html">Notes</a>
+        </nav>
+        <div class="topbar__actions">
+          <div class="pill" id="pillUser">Non authentifie</div>
+          <button class="btn btn--ghost" id="btnLogout" type="button">Deconnexion</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="hero">
+        <div class="hero__card">
+          <p class="kicker">Accueil</p>
+          <h1>Dashboard</h1>
+          <p class="lead">
+            Accedez aux differentes fonctionnalites selon votre role.
+            ENSEIGNANT: ajout de notes. JURY: modification + historique.
+          </p>
+          <div class="hero__meta">
+            <div class="pill pill--muted" id="pillRole">Role: -</div>
+            <div class="pill pill--muted">Port: <span class="mono">8081</span></div>
+          </div>
+        </div>
+
+        <div class="hero__stats" aria-label="Statistiques">
+          <div class="stat">
+            <div class="stat__label">Etudiants</div>
+            <div class="stat__value" id="statEtudiants">-</div>
+          </div>
+          <div class="stat">
+            <div class="stat__label">Cours</div>
+            <div class="stat__value" id="statCours">-</div>
+          </div>
+          <div class="stat">
+            <div class="stat__label">Notes</div>
+            <div class="stat__value" id="statNotes">-</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="cards" aria-label="Modules">
+        <a class="cardlink" href="/etudiants.html">
+          <div class="cardlink__k">Module</div>
+          <div class="cardlink__t">Etudiants</div>
+          <div class="cardlink__d">Liste et ajout d’etudiants.</div>
+          <div class="cardlink__cta">Ouvrir <span class="mono">/etudiants</span></div>
+        </a>
+        <a class="cardlink" href="/cours.html">
+          <div class="cardlink__k">Module</div>
+          <div class="cardlink__t">Cours</div>
+          <div class="cardlink__d">Liste et ajout de cours.</div>
+          <div class="cardlink__cta">Ouvrir <span class="mono">/cours</span></div>
+        </a>
+        <a class="cardlink" href="/notes.html">
+          <div class="cardlink__k">Module</div>
+          <div class="cardlink__t">Notes</div>
+          <div class="cardlink__d">Ajout, modification (Jury) et historique.</div>
+          <div class="cardlink__cta">Ouvrir <span class="mono">/notes</span></div>
+        </a>
+      </section>
+
+      <footer class="footer">
+        <p>Comptes de demo: <span class="mono">enseignant1 / pass123</span> et <span class="mono">jury1 / pass123</span>.</p>
+      </footer>
+    </main>
+
+    <div class="modal" id="loginModal" aria-hidden="true">
+      <div class="modal__backdrop"></div>
+      <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+        <h2 id="loginTitle">Connexion</h2>
+        <p class="muted">Saisissez vos identifiants pour acceder au dashboard.</p>
+        <form class="form" id="formLogin">
+          <div class="field">
+            <label for="lgUser">Utilisateur</label>
+            <input id="lgUser" name="username" placeholder="enseignant1" autocomplete="username" required />
+          </div>
+          <div class="field">
+            <label for="lgPass">Mot de passe</label>
+            <input id="lgPass" name="password" type="password" placeholder="pass123" autocomplete="current-password" required />
+          </div>
+          <div class="row">
+            <button class="btn" type="submit">Se connecter</button>
+            <button class="btn btn--ghost" id="btnUseDemo" type="button">Utiliser demo</button>
+          </div>
+          <div class="error" id="loginError" role="status" aria-live="polite"></div>
+        </form>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="/assets/app.js"></script>
+  </body>
+</html>
+
