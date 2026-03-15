@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS utilisateurs (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     nom_utilisateur VARCHAR(50) NOT NULL UNIQUE,
     mot_de_passe VARCHAR(255) NOT NULL,
-    role ENUM('ENSEIGNANT', 'JURY') NOT NULL
+    role ENUM('ENSEIGNANT', 'JURY', 'ADMIN') NOT NULL
 );
 
 -- Table des étudiants

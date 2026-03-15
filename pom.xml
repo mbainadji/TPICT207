@@ -71,16 +71,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <!-- This repository currently contains legacy CLI/JavaFX + JDBC DAO code mixed with
-                         the Spring Boot/JPA backend. Exclude the legacy sources from the backend build
-                         so the web application compiles and runs without requiring JavaFX. -->
-                    <excludes>
-                        <exclude>com/tpict207/App.java</exclude>
-                        <exclude>com/tpict207/Main.java</exclude>
-                        <exclude>com/tpict207/dao/**</exclude>
-                        <exclude>com/tpict207/util/ConfigurationBD.java</exclude>
-                        <exclude>com/tpict207/service/ServiceNote.java</exclude>
-                    </excludes>
+                    <parameters>true</parameters>
                 </configuration>
             </plugin>
             <plugin>

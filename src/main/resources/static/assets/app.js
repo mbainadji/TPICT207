@@ -3,6 +3,23 @@
 
 const AUTH_KEY = "gv_basic_auth";
 
+// --- MODIFICATION DEBUT : Style pour faire du login la "première page" ---
+// On injecte du CSS pour que le modal de connexion couvre tout l'écran avec un fond opaque.
+const styleLogin = document.createElement("style");
+styleLogin.innerHTML = `
+  #loginModal[aria-hidden="false"] {
+    display: flex !important;
+    position: fixed;
+    inset: 0;
+    width: 100vw; height: 100vh;
+    background-color: #f8f9fa; /* Fond opaque gris clair */
+    z-index: 10000;
+    align-items: center; justify-content: center;
+  }
+`;
+document.head.appendChild(styleLogin);
+// --- MODIFICATION FIN ---
+
 // Prefer localStorage so auth persists across pages and tabs.
 // (sessionStorage is per-tab; users often open modules in new tabs and "lose" auth.)
 function storage() {
@@ -138,8 +155,7 @@ async function requireAuth() {
 function wireAuthUi() {
   el("btnLogout")?.addEventListener("click", () => {
     clearAuth();
-    setPillUser(null);
-    openModal("loginModal");
+    window.location.reload(); // Recharger la page pour afficher l'écran de connexion propre
   });
 
   el("btnUseDemo")?.addEventListener("click", () => {

@@ -51,7 +51,7 @@ mvn spring-boot:run -Dspring-boot.run.arguments=--spring.profiles.active=mysql
 Par defaut, le profil MySQL utilise:
 - host: `localhost:3306`
 - database: `notes_db`
-- user/pass: `app` / `app123`
+- user/pass: `root` / `kamala237`
 
 Tu peux modifier ces valeurs dans `src/main/resources/application-mysql.properties`.
 
